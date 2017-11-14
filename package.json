@@ -1,0 +1,22 @@
+{
+  "name": "blur",
+  "version": "1.0.0",
+  "description": "make your images blur",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcustallberg/blur.git"
+  },
+  "author": "Marcus Tallberg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marcustallberg/blur/issues"
+  },
+  "homepage": "https://github.com/marcustallberg/blur#readme",
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  }
+}
