@@ -1,1 +1,1 @@
-var foo=1;
+const foo = 1

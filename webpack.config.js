@@ -5,5 +5,12 @@ const path = require('path');
      output: {
          path: path.resolve(__dirname, 'dist'),
          filename: 'blur.bundle.js'
+     },
+     module: {
+        loaders: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+         }]
      }
  };
