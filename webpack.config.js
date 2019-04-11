@@ -1,13 +1,13 @@
 const path = require('path')
 
 module.exports = {
-    entry: './src/js/main.js',
+    entry: './js/blur.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'blur.bundle.js'
+        filename: 'blur_fi.min.js'
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.js$/,
             exclude: /node_modules/,
             loader: 'babel-loader'
