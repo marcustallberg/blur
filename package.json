@@ -1,26 +1,19 @@
 {
-  "name": "blur",
-  "version": "1.0.0",
-  "description": "make your images blur",
-  "main": "index.js",
+  "name": "jquery-plugin",
+  "version": "0.0.0-ignored",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack"
+    "test": "grunt qunit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/marcustallberg/blur.git"
-  },
-  "author": "Marcus Tallberg",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/marcustallberg/blur/issues"
-  },
-  "homepage": "https://github.com/marcustallberg/blur#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-es2015": "^6.24.1",
-    "webpack": "^3.8.1"
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-qunit": "~0.1.1",
+    "grunt-contrib-concat": "~0.1.2",
+    "grunt-contrib-uglify": "~0.1.1",
+    "grunt-contrib-watch": "~0.2.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt": "~0.4.0"
   }
 }

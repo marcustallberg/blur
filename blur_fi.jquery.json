@@ -1,0 +1,26 @@
+{
+  "name": "blur_fi",
+  "title": "Blur Fi",
+  "description": "The best jQuery plugin ever.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/marcus/blur_fi",
+  "author": {
+    "name": "Marcus Tallberg",
+    "email": "marcus.tallberg@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marcus/blur_fi.git"
+  },
+  "bugs": "https://github.com/marcus/blur_fi/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/marcus/blur_fi/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}
