@@ -1,81 +1,74 @@
-const pixelSizeLocal = 10
-const loopAmount = pixelSizeLocal * pixelSizeLocal * 4
-
 interface Pixel {
+  rgba: Color,
   height: number,
-  width: number
+  width: number,
+  x: number,
+  y: number
 }
 
-export const blur = (imageData: ImageData, imageWidth: number, imageHeight: number) => {
-  const pixels = imageData.data
-  console.log("PL",pixels.length)
-  console.log(pixels[100])
-  const averagedPixelArray = []
-  const cols = imageWidth / pixelSizeLocal;
-  const rows = imageHeight / pixelSizeLocal;
+interface Color {
+  red: number,
+  green: number,
+  blue: number,
+  alpha: number
+}
 
+export const blur = (imageData: ImageData, imageWidth: number, imageHeight: number, pixelSizeLocal: number) => {
+  const pixels = imageData.data
+  const averagedPixelArray = []
+  const cols = imageWidth / pixelSizeLocal
+  const rows = imageHeight / pixelSizeLocal
   let pixelIndex = 0
   for (let col=0;col<cols;col++){
     for (let row=0;row<rows;row++){
-      let pixel: Pixel = {height: 0, width: 0}
-      pixel.height = Math.min(imageHeight-row*pixelSizeLocal,pixelSizeLocal)
-
-      let redCh = 0 
-      let greenCh = 0
-      let blueCh = 0
+      let rgba: Color = {red:0, green:0, blue:0, alpha:0}
       
-      for (let h=0;h<pixel.height;h++){
-        pixel.width = Math.min(imageWidth-col*pixelSizeLocal, pixelSizeLocal)
-        for (let w=0;w<pixel.width;w++){
+      const blockHeight = Math.min(imageHeight-row * pixelSizeLocal,pixelSizeLocal)
+      const blockWidth = Math.min(imageWidth-col * pixelSizeLocal, pixelSizeLocal)
+
+      for (let h=0;h<blockHeight;h++){
+        
+        for (let w=0;w<blockWidth;w++){
           pixelIndex = ((pixelSizeLocal*(row)+h) * imageWidth + (pixelSizeLocal * (col)+w)) * 4
-          redCh += pixels[pixelIndex]
-          greenCh +=pixels[pixelIndex+1]
-          blueCh +=pixels[pixelIndex+2]
+          rgba.red += pixels[pixelIndex]
+          rgba.green +=pixels[pixelIndex+1]
+          rgba.blue +=pixels[pixelIndex+2]
         }
       }
-        const loopAmount = pixel.height*pixel.width*4
-        averagedPixelArray[averagedPixelArray.length]={
-                        "r":redCh,
-                        "g":greenCh,
-                        "b":blueCh,
-                        "y":pixelSizeLocal*row,
-                        "x":pixelSizeLocal*col,
-                        "pixelW":pixel.width,
-                        "pixelH":pixel.height,
-                        "loopAmount":loopAmount
-                    }
-                
+      const pixel: Pixel = {
+        rgba,
+        height: blockHeight, 
+        width: blockWidth,
+        y: pixelSizeLocal*row,
+        x: pixelSizeLocal*col,
+      }
+      averagedPixelArray[averagedPixelArray.length] = pixel
     }
   }
   blurFill(averagedPixelArray)
 }
 
-const getRgbValue = (averagedPixelArray) => {
-  const {r,g,b,loopAmount} = averagedPixelArray
+const getRgbValue = (pixel: Pixel) => {
+  const {rgba} = pixel
+  const loopAmount = pixel.height*pixel.width*4
+
   const rgb = {
-    r: Math.round(r/(loopAmount >> 2)),
-    g: Math.round(g/(loopAmount >> 2)),
-    b: Math.round(b/(loopAmount >> 2))
+    r: Math.round(rgba.red/(loopAmount >> 2)),
+    g: Math.round(rgba.green/(loopAmount >> 2)),
+    b: Math.round(rgba.blue/(loopAmount >> 2))
   }
   return rgb
 }
 
-const blurFill = (averagedPixelArray) => {
-  console.log("blurFill")
-  const outputCanvas = <HTMLCanvasElement> document.getElementById('blurOutput')
-  const outputContext = outputCanvas.getContext('2d')
+const blurFill = (averagedPixelArray: Pixel[]) => {
+  const outputCanvas = <HTMLCanvasElement>document.getElementById('blurOutput')
+  const outputContext = <CanvasRenderingContext2D>outputCanvas.getContext('2d')
   const len = averagedPixelArray.length
-  console.log(averagedPixelArray[10])
+  console.log("B LEN", len)
   for(var i = 0;i<len;i++){
-    const {r,g,b,y,x,pixelW, pixelH, loopAmount} = averagedPixelArray[i]
-    const rgbValue = getRgbValue(averagedPixelArray[i])
+    const pixel:Pixel = averagedPixelArray[i]
+    const rgbValue = getRgbValue(pixel)
     outputContext.fillStyle = "rgba("+rgbValue.r+", "+rgbValue.g+", "+rgbValue.b+", 1)"
-    outputContext.fillRect(x,y,pixelW,pixelH)
+    outputContext.fillRect(pixel.x, pixel.y, pixel.width, pixel.height)
   }
-
-  
-  //outputContext.fillStyle = "rgba(100, 100, 100, 1)"
-  //outputContext.fillRect(0,0,10,10)
-  //this.context.fillStyle = "rgba("+rgbValue.r+", "+rgbValue.g+", "+rgbValue.b+", 1)";
-  //          this.context.fillRect(x,y,pixelW,pixelH);
 }
