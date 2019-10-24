@@ -1,3 +1,8 @@
+export interface BlurSource {
+  imageData: ImageData,
+  pixelSize: number
+}
+
 interface Pixel {
   rgba: Color,
   height: number,
@@ -9,38 +14,39 @@ interface Pixel {
 interface Color {
   red: number,
   green: number,
-  blue: number,
-  alpha: number
+  blue: number
 }
 
-export const blur = (imageData: ImageData, imageWidth: number, imageHeight: number, pixelSizeLocal: number) => {
-  const pixels = imageData.data
+export const blur = (blurSource: BlurSource) => {
+  const {imageData, pixelSize} = blurSource
+  const {width, height, data} = imageData
   const averagedPixelArray = []
-  const cols = imageWidth / pixelSizeLocal
-  const rows = imageHeight / pixelSizeLocal
+  const cols = width / pixelSize
+  const rows = height / pixelSize
   let pixelIndex = 0
-  for (let col=0;col<cols;col++){
-    for (let row=0;row<rows;row++){
-      let rgba: Color = {red:0, green:0, blue:0, alpha:0}
-      
-      const blockHeight = Math.min(imageHeight-row * pixelSizeLocal,pixelSizeLocal)
-      const blockWidth = Math.min(imageWidth-col * pixelSizeLocal, pixelSizeLocal)
+  for (let col=0; col<cols; col++){
+    const blockWidth = Math.min(width-col * pixelSize, pixelSize)
 
+    for (let row=0; row<rows; row++){
+      const colorArr: number[] = [0,0,0]
+
+      const blockHeight = Math.min(height-row * pixelSize, pixelSize)
+      
       for (let h=0;h<blockHeight;h++){
         
         for (let w=0;w<blockWidth;w++){
-          pixelIndex = ((pixelSizeLocal*(row)+h) * imageWidth + (pixelSizeLocal * (col)+w)) * 4
-          rgba.red += pixels[pixelIndex]
-          rgba.green +=pixels[pixelIndex+1]
-          rgba.blue +=pixels[pixelIndex+2]
+          pixelIndex = ((pixelSize*(row)+h) * width + (pixelSize * (col)+w)) * 4
+          for (let c=0; c<colorArr.length; c++) {
+            colorArr[c] += data[pixelIndex + c]
+          }
         }
       }
       const pixel: Pixel = {
-        rgba,
+        rgba: {red: colorArr[0], green: colorArr[1], blue: colorArr[2]},
         height: blockHeight, 
         width: blockWidth,
-        y: pixelSizeLocal*row,
-        x: pixelSizeLocal*col,
+        y: pixelSize * row,
+        x: pixelSize * col
       }
       averagedPixelArray[averagedPixelArray.length] = pixel
     }
@@ -48,27 +54,26 @@ export const blur = (imageData: ImageData, imageWidth: number, imageHeight: numb
   blurFill(averagedPixelArray)
 }
 
-const getRgbValue = (pixel: Pixel) => {
+const getRgbValue = (pixel: Pixel, effect: string = 'default') => {
   const {rgba} = pixel
-  const loopAmount = pixel.height*pixel.width*4
-
-  const rgb = {
-    r: Math.round(rgba.red/(loopAmount >> 2)),
-    g: Math.round(rgba.green/(loopAmount >> 2)),
-    b: Math.round(rgba.blue/(loopAmount >> 2))
+  const {red, green, blue} = rgba
+  const loopAmount = pixel.height * pixel.width * 4
+  const colorArr: number[] = [0,0,0]
+  if(effect === 'default') {
+    colorArr[0] = Math.round(red/(loopAmount >> 2))
+    colorArr[1] = Math.round(green/(loopAmount >> 2))
+    colorArr[2] = Math.round(blue/(loopAmount >> 2))
   }
-  return rgb
+
+  return `rgba(${colorArr.join(',')}, 1)`
 }
 
-const blurFill = (averagedPixelArray: Pixel[]) => {
+const shader = (pixel: Pixel) => {
   const outputCanvas = <HTMLCanvasElement>document.getElementById('blurOutput')
   const outputContext = <CanvasRenderingContext2D>outputCanvas.getContext('2d')
-  const len = averagedPixelArray.length
-  console.log("B LEN", len)
-  for(var i = 0;i<len;i++){
-    const pixel:Pixel = averagedPixelArray[i]
-    const rgbValue = getRgbValue(pixel)
-    outputContext.fillStyle = "rgba("+rgbValue.r+", "+rgbValue.g+", "+rgbValue.b+", 1)"
-    outputContext.fillRect(pixel.x, pixel.y, pixel.width, pixel.height)
-  }
+  const {x, y, width, height} =  pixel 
+  outputContext.fillStyle = getRgbValue(pixel)
+  outputContext.fillRect(x, y, width, height)
 }
+
+const blurFill = (averagedPixelArray: Pixel[]) => averagedPixelArray.forEach(shader)
