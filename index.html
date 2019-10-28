@@ -5,6 +5,30 @@
 	<body>
 		<canvas id="blurCanvas" width="300px" height="300px" style="float:left"></canvas>
 		<canvas id="blurOutput" width="300px" height="300px" style="float:left"></canvas>
-		<script src="./src/index.ts"></script>
+		<br>
+		<form style="clear:left">
+			<label for="palette">Palette</label>
+			<select id="palette">
+				<option selected value="default">default</option>
+				<option value="c64">c64</option>
+				<option value="gameboy">gameboy</option>
+				<option value="grayscale2Bit">grayscale2Bit</option>
+				<option value="pixelwave">pixelwave</option>
+				<option value="icecream">icecream</option>
+			</select>
+			<br /><br />
+			<label for="pixelsize">Pixel size</label>
+			<select id="pixelsize">
+				<option value=1>1</option>
+				<option value=2>2</option>
+				<option value=3>3</option>
+				<option selected value=4>4</option>
+				<option value=8>8</option>
+				<option value=12>12</option>
+				<option value=16>16</option>
+				<option value=32>32</option>
+			</select>
+		</form>
+	<script src="./src/index.ts"></script>
 	</body>
 </html>
