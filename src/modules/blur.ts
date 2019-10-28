@@ -1,24 +1,28 @@
+import {nearestColor, RGB} from './nearestColor'
+// HEX codes originate from here: http://unusedino.de/ec64/technical/misc/vic656x/colors/ and here https://lospec.com/palette-list/
+import palettes = require('./palettes.json')
+export type Palettes = keyof typeof palettes
+
+function verifyPalette(s: string): s is Palettes {
+    return palettes[s as Palettes] !== undefined
+}
+
 export interface BlurSource {
   imageData: ImageData,
-  pixelSize: number
+  pixelSize: number,
+  palette: string
 }
 
 interface Pixel {
-  rgba: Color,
+  rgb: RGB,
   height: number,
   width: number,
   x: number,
   y: number
 }
 
-interface Color {
-  red: number,
-  green: number,
-  blue: number
-}
-
 export const blur = (blurSource: BlurSource) => {
-  const {imageData, pixelSize} = blurSource
+  const {imageData, pixelSize, palette} = blurSource
   const {width, height, data} = imageData
   const averagedPixelArray = []
   const cols = width / pixelSize
@@ -42,7 +46,11 @@ export const blur = (blurSource: BlurSource) => {
         }
       }
       const pixel: Pixel = {
-        rgba: {red: colorArr[0], green: colorArr[1], blue: colorArr[2]},
+        rgb: {
+          r: colorArr[0], 
+          g: colorArr[1], 
+          b: colorArr[2]
+        },
         height: blockHeight, 
         width: blockWidth,
         y: pixelSize * row,
@@ -51,29 +59,48 @@ export const blur = (blurSource: BlurSource) => {
       averagedPixelArray[averagedPixelArray.length] = pixel
     }
   }
-  blurFill(averagedPixelArray)
+  blurFill(averagedPixelArray, palette)
 }
 
-const getRgbValue = (pixel: Pixel, effect: string = 'default') => {
-  const {rgba} = pixel
-  const {red, green, blue} = rgba
+const getColor = (pixel: Pixel, palette: string = 'default') => {
+
+  const {rgb} = pixel
+  const {r, g, b} = rgb
   const loopAmount = pixel.height * pixel.width * 4
   const colorArr: number[] = [0,0,0]
-  if(effect === 'default') {
-    colorArr[0] = Math.round(red/(loopAmount >> 2))
-    colorArr[1] = Math.round(green/(loopAmount >> 2))
-    colorArr[2] = Math.round(blue/(loopAmount >> 2))
+  colorArr[0] = Math.round(r/(loopAmount >> 2))
+  colorArr[1] = Math.round(g/(loopAmount >> 2))
+  colorArr[2] = Math.round(b/(loopAmount >> 2))
+  /*
+  if (effect === 'inverted') {
+      colorArr[0] = Math.abs(colorArr[0]-255);
+      colorArr[1] = Math.abs(colorArr[1]-255);
+      colorArr[2] = Math.abs(colorArr[2]-255);
   }
 
-  return `rgba(${colorArr.join(',')}, 1)`
+  if(effect === 'desaturated'){
+    colorArr[0] = colorArr[1] = colorArr[2] = Math.round( colorArr[0] * 0.3 + colorArr[1] * 0.59 + colorArr[2] * 0.11);
+  }
+*/
+  if(palette !== 'default') {
+    if(verifyPalette(palette)) {
+      const _palette = palettes[palette]
+      const _clr: RGB = {r: colorArr[0], g: colorArr[1], b: colorArr[2] }
+      const nearest = nearestColor(_clr, _palette)
+      return nearest 
+    } else {
+      throw('unknown palette')
+    }
+  }  
+  return `rgb(${colorArr.join(',')})`
 }
 
-const shader = (pixel: Pixel) => {
+const blurFill = (averagedPixelArray: Pixel[], palette: string) => {
   const outputCanvas = <HTMLCanvasElement>document.getElementById('blurOutput')
   const outputContext = <CanvasRenderingContext2D>outputCanvas.getContext('2d')
-  const {x, y, width, height} =  pixel 
-  outputContext.fillStyle = getRgbValue(pixel)
-  outputContext.fillRect(x, y, width, height)
+  averagedPixelArray.forEach(function(pixel){
+    const {x, y, width, height} =  pixel
+    outputContext.fillStyle = getColor(pixel, palette)
+    outputContext.fillRect(x, y, width, height)
+  })
 }
-
-const blurFill = (averagedPixelArray: Pixel[]) => averagedPixelArray.forEach(shader)
