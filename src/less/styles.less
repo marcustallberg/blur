@@ -4,15 +4,42 @@ body {
   font-size: 16px;
 }
 
-canvas {
-  float: left;
-  height: 300px;
-  width: 300px;
+.blur {
+
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 360px 360px;
+    grid-gap: 5px;
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  &__col {
+    float: left;
+    padding: 10px;
+    margin: 10px;
+    background-color: #FFF;
+
+    canvas, span{ 
+      padding: 10px; 
+      margin: 0 auto;
+      display: block;
+      text-align: center;
+    }
+  }
+  &__settings {
+    background-color: #FFF;
+    clear: both;
+    padding: 10px;
+    margin: 10px;
+    width: 300px;
+    display: inline-block;
+  }
 }
 
 select {
   font-family: 'Raleway', sans-serif;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 label {
