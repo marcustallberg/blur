@@ -32,4 +32,4 @@ img.addEventListener('load', () => {
   changeHandler()
 }, false)
 
-img.src = `http://localhost:1234/img/david-hasselhoff.jpg?${new Date().getTime()}`
+img.src = '/img/david-hasselhoff.jpg'
