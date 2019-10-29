@@ -4,7 +4,6 @@ blur is a JavaScript library written in TypeScript for image processing on the C
 
 [Demo](http://blurdemo.s3-website-eu-west-1.amazonaws.com/)
 
-
 ## Installation
 
 ```bash
