@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset=utf-8>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>blur</title>
 	<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 	<link href="./src/less/styles.less" rel="stylesheet">
@@ -10,41 +11,41 @@
 	<div class="blur__grid">
 		
 	<div class="blur__col">
-		<canvas id="blurCanvas" height="300" width="300"></canvas>
-		<span>Original</span>
-	</div>
-	<div class="blur__col">
-		<canvas id="blurOutput" height="300" width="300"></canvas>
-		<span>Processed</span>
-	</div>
-
-	<div class="blur__col">
+		<canvas id="blurCanvas"></canvas>
+		<div class="blur__title">Original</div>
+		<br>
 		<form>
-			<label for="blurUpload">Upload</label>
-			<input type="file" id="blurUpload" name="imageLoader"/>
-			<br /><br />
-			<a id="blurDownload" href="">Download</a>
-		</form>
+		<label for="blurUpload" class="blur__upload blur__button">Upload
+				<input type="file" id="blurUpload" name="imageLoader"/>
+		</label>
+	</form>
 	</div>
 	<div class="blur__col">
+		<canvas id="blurOutput"></canvas>
 		<form>
-			<label for="palette">Palette</label>
-			<select id="palette">
-				<option selected value="default">default</option>
-			</select>
-			<br /><br />
-			<label for="pixelsize">Pixel size</label>
-			<select id="pixelsize">
-				<option value=1>1</option>
-				<option value=2>2</option>
-				<option value=3>3</option>
-				<option selected value=4>4</option>
-				<option value=8>8</option>
-				<option value=12>12</option>
-				<option value=16>16</option>
-				<option value=32>32</option>
-			</select>
-		</form>
+			<div class="blur__setting">
+				<label for="palette" class="blur__title">Palette</label>
+				<select id="palette">
+					<option selected value="default">default</option>
+				</select>
+			</div>
+			<div class="blur__setting">
+				<label for="pixelsize" class="blur__title">Pixel size</label>
+				<select id="pixelsize">
+					<option value=1>1</option>
+					<option value=2>2</option>
+					<option value=3>3</option>
+					<option selected value=4>4</option>
+					<option value=8>8</option>
+					<option value=12>12</option>
+					<option value=16>16</option>
+					<option value=32>32</option>
+				</select>
+			</div>
+			</form>
+		<div class="clearfix">
+			<a id="blurDownload" href="" class="blur__button ">Download</a>
+	</div>
 	</div>
 </div>
 <script src="./src/index.ts"></script>
