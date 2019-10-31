@@ -10,7 +10,8 @@ function verifyPalette(s: string): s is Palettes {
 export interface BlurSource {
   imageData: ImageData,
   pixelSize: number,
-  palette: string
+  palette: string,
+  outputCanvasId: string
 }
 
 interface Pixel {
@@ -22,7 +23,7 @@ interface Pixel {
 }
 
 export const blur = (blurSource: BlurSource) => {
-  const {imageData, pixelSize, palette} = blurSource
+  const {imageData, pixelSize, palette, outputCanvasId} = blurSource
   const {width, height, data} = imageData
   const averagedPixelArray = []
   const cols = width / pixelSize
@@ -59,7 +60,7 @@ export const blur = (blurSource: BlurSource) => {
       averagedPixelArray[averagedPixelArray.length] = pixel
     }
   }
-  blurFill(averagedPixelArray, palette)
+  blurFill(averagedPixelArray, palette, outputCanvasId)
 }
 
 const getColor = (pixel: Pixel, palette: string = 'default') => {
@@ -95,8 +96,8 @@ const getColor = (pixel: Pixel, palette: string = 'default') => {
   return `rgb(${colorArr.join(',')})`
 }
 
-const blurFill = (averagedPixelArray: Pixel[], palette: string) => {
-  const outputCanvas = <HTMLCanvasElement>document.getElementById('blurOutput')
+const blurFill = (averagedPixelArray: Pixel[], palette: string, outputCanvasId: string) => {
+  const outputCanvas = <HTMLCanvasElement>document.getElementById(outputCanvasId)
   const outputContext = <CanvasRenderingContext2D>outputCanvas.getContext('2d')
   averagedPixelArray.forEach(function(pixel){
     const {x, y, width, height} =  pixel

@@ -1,3 +1,6 @@
+@screen-narrow: 620px;
+@basic-height: 40px;
+
 body {
   background-color: #b6b6b6;
   font-family: 'Raleway', sans-serif;
@@ -5,46 +8,77 @@ body {
 }
 
 .blur {
-
+  
 
   &__grid {
     display: grid;
     grid-template-columns: 360px 360px;
     grid-gap: 5px;
+    @media (max-width: @screen-narrow) {
+      grid-template-columns: 100%;
+      grid-gap: none;
+    }
+    
     grid-auto-rows: minmax(100px, auto);
   }
 
   &__col {
     float: left;
-    padding: 10px;
-    margin: 10px;
+    position: relative;
     background-color: #FFF;
 
-    canvas, span{ 
-      padding: 10px; 
+    canvas{ 
+      width: 100%;
       margin: 0 auto;
       display: block;
       text-align: center;
     }
   }
-  &__settings {
-    background-color: #FFF;
-    clear: both;
+  &__setting {
+    float: left;
+    width: 50%;
+  }
+  
+  &__title {
     padding: 10px;
-    margin: 10px;
-    width: 300px;
-    display: inline-block;
+    text-align: center;
+  }
+  &__button {
+    clear: both;
+    font-size: 14px;
+    width: 90%;
+    margin: 0 auto;
+    height: @basic-height;
+    margin-bottom: 20px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    line-height: @basic-height;
+    border: 1px solid #b6b6b6;
+    color: #000;
+  }
+
+  &__upload {
+    input[type="file"] {
+      display: none;
+    }
   }
 }
 
 select {
   font-family: 'Raleway', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
+  width: 80%;
+  height: @basic-height;
+  margin: 0 10% 20px;
 }
 
 label {
   display: block;
-  margin-bottom: 10px;
+}
+
+.padding-small {
+  padding: 10px;
 }
 
 .clearfix {
