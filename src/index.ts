@@ -37,11 +37,16 @@ const uploadImage = (e:Event) => {
   }
   
   reader.onload = function(event: Event){
-
+    ctx.clearRect(0, 0, canvasInput.width, canvasInput.height);
     var img: HTMLImageElement = new Image()
-    const _width = window.innerWidth
+
     img.onload = function(){
-      ctx.drawImage(img, 0, 0, _width, _width * img.height /img.width )
+      const hRatio = canvasInput.width / img.width
+      const vRatio = canvasInput.height / img.height
+      const ratio  = Math.min ( hRatio, vRatio )
+      setCanvasSize(img.width*ratio, img.height*ratio)
+      ctx.drawImage(img, 0,0, img.width, img.height, 0,0,img.width*ratio, img.height*ratio)
+      changeHandler()
     }
     img.src = reader.result as string
   }
