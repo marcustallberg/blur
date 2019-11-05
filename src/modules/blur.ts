@@ -61,8 +61,7 @@ export const blur = (blurSource: BlurSource) => {
       }
       averagedPixelArray[averagedPixelArray.length] = pixel
     }
-  }
-
+  }  
   blurFill(averagedPixelArray, palette, outputCanvasId)
 }
 
@@ -110,6 +109,7 @@ const getColor = (pixel: Pixel, palette: string = 'default') => {
 }
 
 const blurFill = (averagedPixelArray: Pixel[], palette: string, outputCanvasId: string) => {
+  
   const outputCanvas = <HTMLCanvasElement>document.getElementById(outputCanvasId)
   const outputContext = <CanvasRenderingContext2D>outputCanvas.getContext('2d')
   averagedPixelArray.forEach(function(pixel){
