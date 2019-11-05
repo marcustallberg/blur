@@ -2,10 +2,10 @@ import {nearestColor, RGB} from './nearestColor'
 // HEX codes originate from here: http://unusedino.de/ec64/technical/misc/vic656x/colors/ and here https://lospec.com/palette-list/
 import palettes = require('./palettes.json')
 export type Palettes = keyof typeof palettes
+export type Effects = keyof typeof effects
 
-function verifyPalette(s: string): s is Palettes {
-    return palettes[s as Palettes] !== undefined
-}
+const verifyPalette = (s: string): s is Palettes => palettes[s as Palettes] !== undefined
+const verifyEffect = (s: String): s is Effects => effects[s as Effects] !== undefined 
 
 export interface BlurSource {
   imageData: ImageData,
@@ -21,6 +21,8 @@ interface Pixel {
   x: number,
   y: number
 }
+
+
 
 export const blur = (blurSource: BlurSource) => {
   const {imageData, pixelSize, palette, outputCanvasId} = blurSource
@@ -60,7 +62,32 @@ export const blur = (blurSource: BlurSource) => {
       averagedPixelArray[averagedPixelArray.length] = pixel
     }
   }
+
   blurFill(averagedPixelArray, palette, outputCanvasId)
+}
+
+
+const effects = {
+  'desaturate' : function(colorArr: number[], palette: string){
+    const desaturated = Math.round( colorArr[0] * 0.3 + colorArr[1] * 0.59 + colorArr[2] * 0.11)
+    return `rgb(${desaturated}, ${desaturated}, ${desaturated})`
+  },
+  'invert' : function(colorArr: number[], palette: string) {
+    const _colorArr = [...colorArr]
+    _colorArr[0] = Math.abs(_colorArr[0]-255)
+    _colorArr[1] = Math.abs(_colorArr[1]-255)
+    _colorArr[2] = Math.abs(_colorArr[2]-255)
+    return `rgb(${_colorArr.join(',')})`
+  },
+  'palette' : function(colorArr: number[], palette: string) {
+    if(verifyPalette(palette)) {
+      const _palette = palettes[palette]
+      const _clr: RGB = {r: colorArr[0], g: colorArr[1], b: colorArr[2] }
+      return nearestColor(_clr, _palette)
+    } else {
+      return ''
+    }
+  }
 }
 
 const getColor = (pixel: Pixel, palette: string = 'default') => {
@@ -72,27 +99,13 @@ const getColor = (pixel: Pixel, palette: string = 'default') => {
   colorArr[0] = Math.round(r/(loopAmount >> 2))
   colorArr[1] = Math.round(g/(loopAmount >> 2))
   colorArr[2] = Math.round(b/(loopAmount >> 2))
-  /*
-  if (effect === 'inverted') {
-      colorArr[0] = Math.abs(colorArr[0]-255);
-      colorArr[1] = Math.abs(colorArr[1]-255);
-      colorArr[2] = Math.abs(colorArr[2]-255);
+
+  if(verifyPalette(palette)) {
+    return effects['palette'](colorArr, palette)
+  } else if (verifyEffect(palette)) {
+    return effects[palette](colorArr, palette)
   }
 
-  if(effect === 'desaturated'){
-    colorArr[0] = colorArr[1] = colorArr[2] = Math.round( colorArr[0] * 0.3 + colorArr[1] * 0.59 + colorArr[2] * 0.11);
-  }
-*/
-  if(palette !== 'default') {
-    if(verifyPalette(palette)) {
-      const _palette = palettes[palette]
-      const _clr: RGB = {r: colorArr[0], g: colorArr[1], b: colorArr[2] }
-      const nearest = nearestColor(_clr, _palette)
-      return nearest 
-    } else {
-      throw('unknown palette')
-    }
-  }  
   return `rgb(${colorArr.join(',')})`
 }
 
