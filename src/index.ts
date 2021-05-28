@@ -5,7 +5,7 @@ const canvasInput = <HTMLCanvasElement>document.getElementById('blurCanvas')
 const canvasOutput = <HTMLCanvasElement>document.getElementById('blurOutput')
 const ctx = <CanvasRenderingContext2D>canvasInput.getContext('2d')
 
-const changeHandler = () => {
+const changeHandler = (img:HTMLImageElement) => {
   const imageData = ctx.getImageData(0, 0, img.width, img.height)
   const source: BlurSource = {
     imageData,
@@ -38,15 +38,16 @@ const uploadImage = (e:Event) => {
   
   reader.onload = function(event: Event){
     ctx.clearRect(0, 0, canvasInput.width, canvasInput.height);
-    var img: HTMLImageElement = new Image()
+    const img: HTMLImageElement = new Image()
 
     img.onload = function(){
+      console.log(img.width)
       const hRatio = canvasInput.width / img.width
       const vRatio = canvasInput.height / img.height
       const ratio  = Math.min ( hRatio, vRatio )
       setCanvasSize(img.width*ratio, img.height*ratio)
       ctx.drawImage(img, 0,0, img.width, img.height, 0,0,img.width*ratio, img.height*ratio)
-      changeHandler()
+      changeHandler(img)
     }
     img.src = reader.result as string
   }
