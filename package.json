@@ -1,14 +1,16 @@
 {
   "devDependencies": {
+    "@parcel/transformer-image": "2.0.0-beta.2",
+    "@parcel/transformer-less": "2.0.0-beta.2",
     "less": "^3.10.3",
-    "parcel-bundler": "^1.12.4",
     "typescript": "^3.6.4"
   },
   "name": "blur",
   "version": "1.0.0",
   "main": "index.html",
   "dependencies": {
-    "@types/node": "^12.11.6"
+    "@types/node": "^12.11.6",
+    "parcel": "^2.0.0-beta.2"
   },
   "scripts": {
     "dev": "parcel index.html",

@@ -1,12 +1,16 @@
 import {blur, BlurSource} from './modules/blur'
-import palettes = require('./modules/palettes.json')
+import sourceImage from 'url:./img/david-hasselhoff.jpeg'
+import palettes from './modules/palettes.json'
+
+let originalImage = <HTMLImageElement>new Image()
 
 const canvasInput = <HTMLCanvasElement>document.getElementById('blurCanvas')
 const canvasOutput = <HTMLCanvasElement>document.getElementById('blurOutput')
 const ctx = <CanvasRenderingContext2D>canvasInput.getContext('2d')
 
-const changeHandler = (img:HTMLImageElement) => {
-  const imageData = ctx.getImageData(0, 0, img.width, img.height)
+const changeHandler = () => {
+
+  const imageData = ctx.getImageData(0, 0, originalImage.width, originalImage.height)
   const source: BlurSource = {
     imageData,
     pixelSize: Number(pixelsize.value),
@@ -41,13 +45,13 @@ const uploadImage = (e:Event) => {
     const img: HTMLImageElement = new Image()
 
     img.onload = function(){
-      console.log(img.width)
+      originalImage = img
       const hRatio = canvasInput.width / img.width
       const vRatio = canvasInput.height / img.height
       const ratio  = Math.min ( hRatio, vRatio )
       setCanvasSize(img.width*ratio, img.height*ratio)
       ctx.drawImage(img, 0,0, img.width, img.height, 0,0,img.width*ratio, img.height*ratio)
-      changeHandler(img)
+      changeHandler()
     }
     img.src = reader.result as string
   }
@@ -86,14 +90,14 @@ const setCanvasSize = (imgWidth: number, imgHeight: number) => {
   }
 }
 
-
-const img = new Image()
-
-img.addEventListener('load', () => {
-
-  const {canvasWidth, canvasHeight} = setCanvasSize(img.width, img.height)
-  ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight )
+originalImage.addEventListener('load', () => {
+  const {canvasWidth, canvasHeight} = setCanvasSize(originalImage.width, originalImage.height)
+  ctx.drawImage(originalImage, 0, 0, canvasWidth, canvasHeight )
   changeHandler()
 }, false)
 
-img.src = '/img/david-hasselhoff.jpg'
+originalImage.addEventListener('error', (e) => {
+  console.log(e)
+})
+
+originalImage.src = sourceImage

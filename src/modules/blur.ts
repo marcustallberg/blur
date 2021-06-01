@@ -1,6 +1,6 @@
 import {nearestColor, RGB} from './nearestColor'
 // HEX codes originate from here: http://unusedino.de/ec64/technical/misc/vic656x/colors/ and here https://lospec.com/palette-list/
-import palettes = require('./palettes.json')
+import palettes from './palettes.json'
 export type Palettes = keyof typeof palettes
 export type Effects = keyof typeof effects
 
